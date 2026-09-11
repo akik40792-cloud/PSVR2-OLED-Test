@@ -10,7 +10,7 @@ body{color:#fff}
 #menu{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#111;gap:28px;z-index:2}
 h1{font-size:clamp(28px,5vw,56px);margin:0 0 8px;text-align:center}
 #buttons{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;max-width:1000px}
-button{font-size:clamp(20px,3vw,34px);font-weight:bold;padding:20px 30px;border:3px solid #fff;border-radius:12px;background:#222;color:#fff;min-width:180px;cursor:pointer}
+.lang{min-width:90px;padding:10px 16px;font-size:22px}.lang.active{background:#fff;color:#000}button{font-size:clamp(20px,3vw,34px);font-weight:bold;padding:20px 30px;border:3px solid #fff;border-radius:12px;background:#222;color:#fff;min-width:180px;cursor:pointer}
 button.selected{outline:6px solid #fff;outline-offset:5px;transform:scale(1.04)}
 #help{font-size:clamp(16px,2vw,24px);text-align:center;line-height:1.5;opacity:.9;max-width:900px;padding:0 20px}
 #test{position:absolute;inset:0;display:none;align-items:center;justify-content:center}
@@ -20,6 +20,7 @@ button.selected{outline:6px solid #fff;outline-offset:5px;transform:scale(1.04)}
 </head>
 <body>
 <div id="menu">
+  <div id="lang"><button id="ru" class="lang active">RU</button><button id="en" class="lang">EN</button></div>
   <h1>PS VR2 — OLED TEST</h1>
   <div id="buttons">
     <button data-color="#000000">ЧЁРНЫЙ</button>
@@ -32,14 +33,19 @@ button.selected{outline:6px solid #fff;outline-offset:5px;transform:scale(1.04)}
 </div>
 <div id="test"></div>
 <div id="timer"></div>
-<div id="testHelp">15 секунд — затем возврат к выбору</div>
+<div id="testHelp"></div>
 <script>
 const menu=document.getElementById('menu');
 const test=document.getElementById('test');
 const timer=document.getElementById('timer');
-const buttons=[...document.querySelectorAll('button')];
+const buttons=[...document.querySelectorAll('#buttons button')];
+
 let selected=0, gamepadIndex=null, lastAxes=0, lastButtons=[];
 let countdown=null, endAt=0;
+let lang='ru';
+const texts={ru:{title:'PS VR2 — OLED TEST',black:'ЧЁРНЫЙ',white:'БЕЛЫЙ',red:'КРАСНЫЙ',green:'ЗЕЛЁНЫЙ',blue:'СИНИЙ',help:'Выберите цвет крестовиной или левым стиком PS5 и нажмите ✕ (X).',hint:'Тест длится 15 секунд — затем автоматический возврат к выбору.',test:'ПРОВЕРКА OLED',sec:'сек.'},en:{title:'PS VR2 — OLED TEST',black:'BLACK',white:'WHITE',red:'RED',green:'GREEN',blue:'BLUE',help:'Select a color with the D-pad or left stick and press ✕ (X).',hint:'Test lasts 15 seconds — then returns to color selection.',test:'OLED TEST',sec:'sec.'}};
+function setLanguage(l){lang=l; document.documentElement.lang=l; document.getElementById('ru').classList.toggle('active',l==='ru');document.getElementById('en').classList.toggle('active',l==='en');const t=texts[l];document.querySelector('h1').textContent=t.title;buttons[0].textContent=t.black;buttons[1].textContent=t.white;buttons[2].textContent=t.red;buttons[3].textContent=t.green;buttons[4].textContent=t.blue;document.getElementById('help').innerHTML=t.help+'<br>'+t.hint;}
+
 
 function updateSelection(){
   buttons.forEach((b,i)=>b.classList.toggle('selected',i===selected));
@@ -58,7 +64,7 @@ function startTest(i){
   menu.style.display='none'; test.style.display='flex';
   document.body.style.background=color; test.style.background=color;
   endAt=Date.now()+15000;
-  timer.style.display='block'; document.getElementById('testHelp').style.display='block';
+  timer.style.display='block'; document.getElementById('testHelp').textContent=texts[lang].test+' — '+texts[lang].hint; document.getElementById('testHelp').style.display='block';
   updateTimer();
   if(countdown) clearInterval(countdown);
   countdown=setInterval(()=>{
@@ -66,7 +72,8 @@ function startTest(i){
     if(Date.now()>=endAt) showMenu();
   },100);
 }
-function updateTimer(){timer.textContent=Math.max(0,Math.ceil((endAt-Date.now())/1000))+' с';}
+function updateTimer(){timer.textContent=Math.max(0,Math.ceil((endAt-Date.now())/1000))+' '+texts[lang].sec;}
+document.getElementById('ru').onclick=()=>setLanguage('ru');document.getElementById('en').onclick=()=>setLanguage('en');
 buttons.forEach((b,i)=>{
   b.addEventListener('click',()=>startTest(i));
   b.addEventListener('mouseenter',()=>{selected=i;updateSelection();});
@@ -99,7 +106,7 @@ function pollGamepad(){
   }
   requestAnimationFrame(pollGamepad);
 }
-updateSelection();
+setLanguage('ru');updateSelection();
 pollGamepad();
 </script>
 </body>
