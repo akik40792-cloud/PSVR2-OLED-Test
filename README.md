@@ -5,3 +5,9 @@
 - Added automatic return to the color selection menu after 15 seconds
 - Added ESC and M keyboard shortcuts to return to the menu
 - Improved fullscreen OLED color testing
+- Removed visible countdown during color testing
+- Removed visible test message
+- Added hidden 15-second timer
+- Automatically returns to the color selection menu after 15 seconds
+- Preserved DualSense controller navigation
+- Preserved Russian and English language support
