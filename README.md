@@ -1,0 +1,7 @@
+- Added DualSense controller navigation
+- Added large on-screen control instructions
+- Added color selection using the D-pad
+- Added X button to start the color test
+- Added automatic return to the color selection menu after 15 seconds
+- Added ESC and M keyboard shortcuts to return to the menu
+- Improved fullscreen OLED color testing
