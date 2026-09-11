@@ -7,15 +7,21 @@
 <style>
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;font-family:Arial,sans-serif}
 body{color:#fff}
-#menu{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#111;gap:28px;z-index:2}
+#menu{position:fixed;inset:0;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#111;gap:22px;z-index:2;padding:24px;overflow:hidden}
 h1{font-size:clamp(28px,5vw,56px);margin:0 0 8px;text-align:center}
-#buttons{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;max-width:1000px}
-.lang{min-width:90px;padding:10px 16px;font-size:22px}.lang.active{background:#fff;color:#000}button{font-size:clamp(20px,3vw,34px);font-weight:bold;padding:20px 30px;border:3px solid #fff;border-radius:12px;background:#222;color:#fff;min-width:180px;cursor:pointer}
-button.selected{outline:6px solid #fff;outline-offset:5px;transform:scale(1.04)}
+#buttons{box-sizing:border-box;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center;width:min(100%,1000px);max-width:100%;padding:4px}
+.lang{min-width:84px;padding:8px 14px;font-size:20px}.lang.active{background:#fff;color:#000}button{box-sizing:border-box;font-size:clamp(18px,2.7vw,32px);font-weight:700;padding:18px 24px;border:3px solid rgba(255,255,255,.9);border-radius:12px;color:#fff;min-width:170px;min-height:76px;cursor:pointer;box-shadow:none}
+#buttons button:nth-child(1){background:#000;color:#fff}
+#buttons button:nth-child(2){background:#fff;color:#000}
+#buttons button:nth-child(3){background:#f00;color:#fff}
+#buttons button:nth-child(4){background:#0f0;color:#000}
+#buttons button:nth-child(5){background:#00f;color:#fff}
+#buttons button.selected{transform:scale(1.02);box-shadow:0 0 0 4px #fff}
+#buttons button:focus{outline:none}
 #help{font-size:clamp(16px,2vw,24px);text-align:center;line-height:1.5;opacity:.9;max-width:900px;padding:0 20px}
 #test{position:absolute;inset:0;display:none;align-items:center;justify-content:center}
-#timer{position:fixed;top:18px;right:24px;color:#fff;background:rgba(0,0,0,.45);padding:8px 14px;border-radius:10px;font:700 20px Arial;z-index:3;display:none}
-#testHelp{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);color:#fff;background:rgba(0,0,0,.45);padding:8px 14px;border-radius:10px;font:16px Arial;z-index:3;display:none}
+#timer,#testHelp{display:none!important}
+@media (max-width:700px){#buttons{gap:10px}#buttons button{min-width:130px;min-height:62px;padding:14px 16px}#help{max-width:95%;font-size:16px}h1{font-size:30px}}
 </style>
 </head>
 <body>
@@ -64,8 +70,7 @@ function startTest(i){
   menu.style.display='none'; test.style.display='flex';
   document.body.style.background=color; test.style.background=color;
   endAt=Date.now()+15000;
-  timer.style.display='block'; document.getElementById('testHelp').textContent=texts[lang].test+' — '+texts[lang].hint; document.getElementById('testHelp').style.display='block';
-  updateTimer();
+  timer.style.display='none'; document.getElementById('testHelp').style.display='none';
   if(countdown) clearInterval(countdown);
   countdown=setInterval(()=>{
     updateTimer();
