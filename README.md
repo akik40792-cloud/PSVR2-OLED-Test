@@ -1,9 +1,8 @@
-- Added matching colors to OLED test buttons
-- Fixed oversized button borders
-- Improved responsive layout for TV and PS5 screens
-- Completely hidden timer during OLED testing
-- Completely hidden test text and overlays
-- Added hidden 15-second test countdown
-- Automatically returns to the color selection menu
-- Preserved RU/EN language support
+- Added automatic language detection using browser settings
+- Added Russian interface for ru locales
+- Added English interface for en and other locales
+- Removed manual RU/EN language buttons
+- Preserved colored OLED test buttons
 - Preserved DualSense controller navigation
+- Preserved hidden 15-second OLED test timer
+- Preserved automatic return to the color selection menu
