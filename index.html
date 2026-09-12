@@ -1,60 +1,182 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>PS VR2 — OLED TEST</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;font-family:Arial,sans-serif;background:#101010;color:#fff;overflow:hidden}
-body{display:flex;align-items:center;justify-content:center}.menu{width:min(1100px,92vw);padding:28px;text-align:center}.title{font-size:clamp(30px,5vw,64px);font-weight:700;margin-bottom:28px}.hint{font-size:clamp(20px,3vw,34px);line-height:1.4;margin-top:28px}.lang{font-size:18px;opacity:.6;margin-top:34px;margin-bottom:8px}.counter{font-size:20px;opacity:.8;margin:0 0 22px}.colors{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;width:100%}.color-btn{height:clamp(110px,18vw,190px);border:5px solid #fff;border-radius:18px;font-size:clamp(18px,2.5vw,32px);font-weight:700;cursor:pointer;box-shadow:0 0 0 2px #333 inset}.color-btn.selected{outline:6px solid #ffd400;outline-offset:5px;transform:scale(1.02)}.black{background:#000;color:#fff}.white{background:#fff;color:#000}.red{background:#f00;color:#fff}.green{background:#00c000;color:#fff}.blue{background:#00f;color:#fff}.auto{background:#444;color:#fff}.auto.active{background:#ffd400;color:#000}.test{position:fixed;inset:0;width:100vw;height:100vh}.hidden{display:none!important}@media(max-width:1000px){.colors{grid-template-columns:repeat(3,1fr)}}@media(max-width:600px){.colors{grid-template-columns:repeat(2,1fr)}.color-btn:last-child{grid-column:auto}}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;font-family:Arial,sans-serif;background:#101010;color:#fff;overflow:hidden}
+body{display:flex;align-items:center;justify-content:center}
+.menu{width:min(1180px,94vw);padding:24px;text-align:center}
+.title{font-size:clamp(30px,5vw,64px);font-weight:700;margin-bottom:28px}
+.colors{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;width:100%}
+.color-btn{height:clamp(110px,18vw,190px);border:4px solid #fff;border-radius:16px;font-size:clamp(17px,2.3vw,30px);font-weight:700;cursor:pointer;box-shadow:0 0 0 2px #333 inset;touch-action:manipulation}
+.color-btn.selected{outline:6px solid #ffd400;outline-offset:5px;transform:scale(1.02)}
+.black{background:#000;color:#fff}.white{background:#fff;color:#000}.red{background:#f00;color:#fff}.green{background:#00c000;color:#fff}.blue{background:#00f;color:#fff}
+.auto{background:#444;color:#fff}.auto.active{background:#ffd400;color:#000}
+.hint{font-size:clamp(19px,2.8vw,32px);line-height:1.4;margin-top:30px}
+.lang{font-size:18px;opacity:.65;margin-top:30px}
+.counter{font-size:18px;opacity:.8;margin-top:8px;height:26px}
+.counter img{height:24px;width:auto;vertical-align:middle}
+.test{position:fixed;inset:0;width:100vw;height:100vh;background:#000}
+.hidden{display:none!important}
+@media(max-width:1000px){.colors{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.colors{grid-template-columns:repeat(2,1fr);gap:12px}.color-btn{height:120px}}
 </style>
 </head>
 <body>
 <div id="menu" class="menu">
-  <div id="title" class="title"></div>
+  <div id="title" class="title">PS VR2 — OLED TEST</div>
   <div class="colors">
-    <button class="color-btn black" data-color="#000000" data-i="0"></button>
-    <button class="color-btn white" data-color="#ffffff" data-i="1"></button>
-    <button class="color-btn red" data-color="#ff0000" data-i="2"></button>
-    <button class="color-btn green" data-color="#00ff00" data-i="3"></button>
-    <button class="color-btn blue" data-color="#0000ff" data-i="4"></button>
+    <button class="color-btn black" data-color="#000000">BLACK</button>
+    <button class="color-btn white" data-color="#ffffff">WHITE</button>
+    <button class="color-btn red" data-color="#ff0000">RED</button>
+    <button class="color-btn green" data-color="#00ff00">GREEN</button>
+    <button class="color-btn blue" data-color="#0000ff">BLUE</button>
     <button id="autoBtn" class="color-btn auto" type="button">AUTO</button>
   </div>
-  <div id="hint" class="hint"></div>
-  <div id="lang" class="lang"></div>
-  <div id="counter" class="counter">👁 <span id="viewCount">—</span></div>
+  <div id="hint" class="hint">Select a color with the D-pad or left stick and press ✕ (X).</div>
+  <div id="lang" class="lang">Language: English</div>
+  <div class="counter">👁 <span id="counterSlot">views</span></div>
 </div>
 <div id="test" class="test hidden"></div>
-<script>
-const isRussian=(navigator.language||navigator.languages?.[0]||'en').toLowerCase().startsWith('ru');
-const t=isRussian?{
- title:'PS VR2 — ТЕСТ OLED',hint:'Выберите цвет крестовиной или левым стиком PS5 и нажмите ✕ (X).',lang:'Язык: русский',names:['ЧЁРНЫЙ','БЕЛЫЙ','КРАСНЫЙ','ЗЕЛЁНЫЙ','СИНИЙ']
-}:{title:'PS VR2 — OLED TEST',hint:'Select a color with the D-pad or left stick and press ✕ (X).',lang:'Language: English',names:['BLACK','WHITE','RED','GREEN','BLUE']};
-document.documentElement.lang=isRussian?'ru':'en';
-document.getElementById('title').textContent=t.title;document.getElementById('hint').textContent=t.hint;document.getElementById('lang').textContent=t.lang;
-document.querySelectorAll('.color-btn[data-color]').forEach((b,i)=>b.textContent=t.names[i]);
 
-// Page-view counter via Hits.sh. No account/API key is required.
-// The badge is hidden automatically while an OLED color is being tested.
-const viewCount=document.getElementById('viewCount');
-const counterImg=document.createElement('img');
-counterImg.alt='Page views';
-counterImg.style.cssText='height:24px;width:auto;vertical-align:middle;';
-counterImg.src='https://hits.sh/akik40792-cloud.github.io/PSVR2-OLED-Test.svg?label=просмотры&style=flat&color=444&labelColor=222';
-viewCount.replaceWith(counterImg);
-const buttons=[...document.querySelectorAll('.color-btn[data-color]')], menu=document.getElementById('menu'), test=document.getElementById('test'), autoBtn=document.getElementById('autoBtn');
-let selected=0, testing=false, timer=null, lastButtons=[], autoMode=false;
-function select(i){selected=(i+buttons.length)%buttons.length;buttons.forEach((b,n)=>b.classList.toggle('selected',n===selected));}
+<script>
+(function(){
+"use strict";
+
+var colors=[].slice.call(document.querySelectorAll(".color-btn[data-color]"));
+var menu=document.getElementById("menu"), test=document.getElementById("test");
+var autoBtn=document.getElementById("autoBtn");
+var isRussian=false;
+try{
+  var bl=(navigator.language||(navigator.languages&&navigator.languages[0])||"en").toLowerCase();
+  isRussian=bl.indexOf("ru")===0;
+}catch(e){}
+
+var names=isRussian?["ЧЁРНЫЙ","БЕЛЫЙ","КРАСНЫЙ","ЗЕЛЁНЫЙ","СИНИЙ"]:["BLACK","WHITE","RED","GREEN","BLUE"];
+document.documentElement.lang=isRussian?"ru":"en";
+document.getElementById("title").textContent=isRussian?"PS VR2 — ТЕСТ OLED":"PS VR2 — OLED TEST";
+document.getElementById("hint").textContent=isRussian?"Выберите цвет крестовиной или левым стиком PS5 и нажмите ✕ (X).":"Select a color with the D-pad or left stick and press ✕ (X).";
+document.getElementById("lang").textContent=isRussian?"Язык: русский":"Language: English";
+colors.forEach(function(b,i){b.textContent=names[i];});
+
+var img=document.createElement("img");
+img.alt="Page views";
+img.src="https://hits.sh/akik40792-cloud.github.io/PSVR2-OLED-Test.svg?label=views&style=flat&color=444&labelColor=222";
+document.getElementById("counterSlot").replaceWith(img);
+
+var selected=0, testing=false, autoMode=false, autoIndex=0, timer=null;
+var lastButtons=[], axisLocked=false;
+
+function select(i){
+  if(i<0)i=colors.length-1;
+  if(i>=colors.length)i=0;
+  selected=i;
+  colors.forEach(function(b,n){b.classList.toggle("selected",n===selected);});
+}
+function clearTimer(){
+  if(timer!==null){clearTimeout(timer);timer=null;}
+}
+function menuShow(){
+  clearTimer(); testing=false;
+  test.classList.add("hidden"); test.style.backgroundColor="#000";
+  menu.classList.remove("hidden");
+}
+function autoLabel(){return isRussian?"АВТО":"AUTO";}
+function stopAuto(){
+  autoMode=false; autoIndex=0;
+  autoBtn.classList.remove("active"); autoBtn.textContent=autoLabel();
+  menuShow();
+}
+function startColor(index,auto){
+  clearTimer();
+  selected=index; testing=true; autoMode=!!auto;
+  menu.classList.add("hidden"); test.classList.remove("hidden");
+  test.style.backgroundColor=colors[selected].getAttribute("data-color");
+
+  timer=setTimeout(function(){
+    timer=null;
+    if(autoMode){
+      autoIndex=selected+1;
+      if(autoIndex>=colors.length){
+        autoMode=false;
+        autoBtn.classList.remove("active"); autoBtn.textContent=autoLabel();
+        menuShow();
+      }else{
+        startColor(autoIndex,true);
+      }
+    }else{
+      menuShow();
+    }
+  },15000);
+}
+function startManual(){
+  autoMode=false; autoIndex=selected;
+  autoBtn.classList.remove("active"); autoBtn.textContent=autoLabel();
+  startColor(selected,false);
+}
+function startAuto(){
+  clearTimer();
+  autoMode=true; autoIndex=0; selected=0;
+  autoBtn.classList.add("active");
+  autoBtn.textContent=isRussian?"СТОП":"STOP";
+  startColor(0,true);
+}
+
 select(0);
-function start(){if(testing)return;testing=true;menu.classList.add('hidden');test.classList.remove('hidden');test.style.backgroundColor=buttons[selected].dataset.color;timer=setTimeout(()=>autoMode?nextAuto():showMenu(),15000);}
-function showMenu(){clearTimeout(timer);testing=false;test.classList.add('hidden');test.style.backgroundColor='';menu.classList.remove('hidden');select(selected);}
-function nextAuto(){clearTimeout(timer);if(selected>=buttons.length-1){autoMode=false;autoBtn.classList.remove('active');autoBtn.textContent='AUTO';showMenu();return;}selected++;start();}
-function startAuto(){autoMode=true;autoBtn.classList.add('active');autoBtn.textContent=isRussian?'СТОП':'STOP';select(0);start();}
-function stopAuto(){autoMode=false;autoBtn.classList.remove('active');autoBtn.textContent='AUTO';showMenu();}
-autoBtn.addEventListener('click',()=>autoMode?stopAuto():startAuto());
-buttons.forEach((b,i)=>{b.addEventListener('click',()=>{select(i);start()})});
-window.addEventListener('keydown',e=>{if(testing){if(e.key==='Escape'||e.key.toLowerCase()==='m')stopAuto();return}if(['ArrowLeft','ArrowUp'].includes(e.key))select(selected-1);if(['ArrowRight','ArrowDown'].includes(e.key))select(selected+1);if(e.key==='Enter'||e.key===' ')start();});
-function poll(){const pads=navigator.getGamepads?navigator.getGamepads():[];const p=[...pads].find(Boolean);if(p){for(let i=0;i<p.buttons.length;i++){const pressed=!!p.buttons[i].pressed;if(pressed&&!lastButtons[i]){if(testing){if(i===1)stopAuto();}else{if(i===14||i===12)select(selected-1);if(i===15||i===13)select(selected+1);if(i===0)start();}}lastButtons[i]=pressed;}const x=p.axes?.[0]||0,y=p.axes?.[1]||0;if(!testing){if(Math.abs(x)>.7)select(selected+(x>0?1:-1));if(Math.abs(y)>.7)select(selected+(y>0?1:-1));}}requestAnimationFrame(poll)}
-window.addEventListener('gamepadconnected',()=>{lastButtons=[]});poll();
+
+colors.forEach(function(b,i){
+  b.addEventListener("click",function(){select(i);startManual();});
+});
+autoBtn.addEventListener("click",function(){if(autoMode)stopAuto();else startAuto();});
+
+window.addEventListener("keydown",function(e){
+  if(testing){
+    if(e.key==="Escape"||e.key==="m"||e.key==="M")stopAuto();
+    return;
+  }
+  if(e.key==="ArrowLeft"||e.key==="ArrowUp"){e.preventDefault();select(selected-1);}
+  else if(e.key==="ArrowRight"||e.key==="ArrowDown"){e.preventDefault();select(selected+1);}
+  else if(e.key==="Enter"||e.key===" "){e.preventDefault();startManual();}
+});
+
+function poll(){
+  var pads=[];
+  try{pads=navigator.getGamepads?navigator.getGamepads():[];}catch(e){}
+  var p=null;
+  for(var n=0;n<pads.length;n++){if(pads[n]){p=pads[n];break;}}
+  if(p){
+    for(var i=0;i<p.buttons.length;i++){
+      var pressed=!!p.buttons[i].pressed;
+      if(pressed&&!lastButtons[i]){
+        if(testing){
+          if(i===1)stopAuto();
+        }else{
+          if(i===12||i===14)select(selected-1);
+          else if(i===13||i===15)select(selected+1);
+          else if(i===0)startManual();
+        }
+      }
+      lastButtons[i]=pressed;
+    }
+    var x=p.axes&&typeof p.axes[0]==="number"?p.axes[0]:0;
+    var y=p.axes&&typeof p.axes[1]==="number"?p.axes[1]:0;
+    if(!testing){
+      var moved=Math.abs(x)>.7||Math.abs(y)>.7;
+      if(moved&&!axisLocked){
+        if(Math.abs(x)>Math.abs(y))select(selected+(x>0?1:-1));
+        else select(selected+(y>0?1:-1));
+        axisLocked=true;
+      }else if(!moved){axisLocked=false;}
+    }
+  }
+  requestAnimationFrame(poll);
+}
+window.addEventListener("gamepadconnected",function(){lastButtons=[];axisLocked=false;});
+poll();
+})();
 </script>
-</body></html>
+</body>
+</html>
