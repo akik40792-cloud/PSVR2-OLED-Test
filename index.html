@@ -6,22 +6,23 @@
 <title>PS VR2 — OLED TEST</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;font-family:Arial,sans-serif;background:#101010;color:#fff;overflow:hidden}
-body{display:flex;align-items:center;justify-content:center}.menu{width:min(1100px,92vw);padding:28px;text-align:center}.title{font-size:clamp(30px,5vw,64px);font-weight:700;margin-bottom:28px}.hint{font-size:clamp(20px,3vw,34px);line-height:1.4;margin-top:28px}.lang{font-size:18px;opacity:.6;margin-bottom:14px}.counter{font-size:20px;opacity:.8;margin:-12px 0 20px}.colors{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;width:100%}.color-btn{height:clamp(110px,18vw,190px);border:5px solid #fff;border-radius:18px;font-size:clamp(18px,2.5vw,32px);font-weight:700;cursor:pointer;box-shadow:0 0 0 2px #333 inset}.color-btn.selected{outline:6px solid #ffd400;outline-offset:5px;transform:scale(1.02)}.black{background:#000;color:#fff}.white{background:#fff;color:#000}.red{background:#f00;color:#fff}.green{background:#00c000;color:#fff}.blue{background:#00f;color:#fff}.test{position:fixed;inset:0;width:100vw;height:100vh}.hidden{display:none!important}@media(max-width:800px){.colors{grid-template-columns:repeat(2,1fr)}.color-btn:last-child{grid-column:1/-1}}
+body{display:flex;align-items:center;justify-content:center}.menu{width:min(1100px,92vw);padding:28px;text-align:center}.title{font-size:clamp(30px,5vw,64px);font-weight:700;margin-bottom:28px}.hint{font-size:clamp(20px,3vw,34px);line-height:1.4;margin-top:28px}.lang{font-size:18px;opacity:.6;margin-top:34px;margin-bottom:8px}.counter{font-size:20px;opacity:.8;margin:0 0 22px}.colors{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;width:100%}.color-btn{height:clamp(110px,18vw,190px);border:5px solid #fff;border-radius:18px;font-size:clamp(18px,2.5vw,32px);font-weight:700;cursor:pointer;box-shadow:0 0 0 2px #333 inset}.color-btn.selected{outline:6px solid #ffd400;outline-offset:5px;transform:scale(1.02)}.black{background:#000;color:#fff}.white{background:#fff;color:#000}.red{background:#f00;color:#fff}.green{background:#00c000;color:#fff}.blue{background:#00f;color:#fff}.auto{background:#444;color:#fff}.auto.active{background:#ffd400;color:#000}.test{position:fixed;inset:0;width:100vw;height:100vh}.hidden{display:none!important}@media(max-width:1000px){.colors{grid-template-columns:repeat(3,1fr)}}@media(max-width:600px){.colors{grid-template-columns:repeat(2,1fr)}.color-btn:last-child{grid-column:auto}}
 </style>
 </head>
 <body>
 <div id="menu" class="menu">
-  <div id="lang" class="lang"></div>
   <div id="title" class="title"></div>
-  <div id="counter" class="counter">👁 <span id="viewCount">—</span></div>
   <div class="colors">
     <button class="color-btn black" data-color="#000000" data-i="0"></button>
     <button class="color-btn white" data-color="#ffffff" data-i="1"></button>
     <button class="color-btn red" data-color="#ff0000" data-i="2"></button>
     <button class="color-btn green" data-color="#00ff00" data-i="3"></button>
     <button class="color-btn blue" data-color="#0000ff" data-i="4"></button>
+    <button id="autoBtn" class="color-btn auto" type="button">AUTO</button>
   </div>
   <div id="hint" class="hint"></div>
+  <div id="lang" class="lang"></div>
+  <div id="counter" class="counter">👁 <span id="viewCount">—</span></div>
 </div>
 <div id="test" class="test hidden"></div>
 <script>
@@ -31,31 +32,29 @@ const t=isRussian?{
 }:{title:'PS VR2 — OLED TEST',hint:'Select a color with the D-pad or left stick and press ✕ (X).',lang:'Language: English',names:['BLACK','WHITE','RED','GREEN','BLUE']};
 document.documentElement.lang=isRussian?'ru':'en';
 document.getElementById('title').textContent=t.title;document.getElementById('hint').textContent=t.hint;document.getElementById('lang').textContent=t.lang;
-document.querySelectorAll('.color-btn').forEach((b,i)=>b.textContent=t.names[i]);
+document.querySelectorAll('.color-btn[data-color]').forEach((b,i)=>b.textContent=t.names[i]);
 
-// Public page-view counter via CounterAPI. It is visible only on the menu and is hidden during OLED tests.
-const COUNTER_WORKSPACE='akik40792-psvr2-oled-test';
-const COUNTER_NAME='page-views';
+// Page-view counter via Hits.sh. No account/API key is required.
+// The badge is hidden automatically while an OLED color is being tested.
 const viewCount=document.getElementById('viewCount');
-async function countPageView(){
-  try{
-    const r=await fetch(`https://api.counterapi.dev/v2/${COUNTER_WORKSPACE}/${COUNTER_NAME}/up`);
-    if(!r.ok) throw new Error('counter');
-    const d=await r.json();
-    const value=d.value ?? d.data?.value ?? d.data;
-    if(value!==undefined) viewCount.textContent=Number(value).toLocaleString();
-  }catch(e){viewCount.textContent='—';}
-}
-countPageView();
-const buttons=[...document.querySelectorAll('.color-btn')], menu=document.getElementById('menu'), test=document.getElementById('test');
-let selected=0, testing=false, timer=null, lastButtons=[];
+const counterImg=document.createElement('img');
+counterImg.alt='Page views';
+counterImg.style.cssText='height:24px;width:auto;vertical-align:middle;';
+counterImg.src='https://hits.sh/akik40792-cloud.github.io/PSVR2-OLED-Test.svg?label=просмотры&style=flat&color=444&labelColor=222';
+viewCount.replaceWith(counterImg);
+const buttons=[...document.querySelectorAll('.color-btn[data-color]')], menu=document.getElementById('menu'), test=document.getElementById('test'), autoBtn=document.getElementById('autoBtn');
+let selected=0, testing=false, timer=null, lastButtons=[], autoMode=false;
 function select(i){selected=(i+buttons.length)%buttons.length;buttons.forEach((b,n)=>b.classList.toggle('selected',n===selected));}
 select(0);
-function start(){if(testing)return;testing=true;menu.classList.add('hidden');test.classList.remove('hidden');test.style.backgroundColor=buttons[selected].dataset.color;timer=setTimeout(showMenu,15000);}
+function start(){if(testing)return;testing=true;menu.classList.add('hidden');test.classList.remove('hidden');test.style.backgroundColor=buttons[selected].dataset.color;timer=setTimeout(()=>autoMode?nextAuto():showMenu(),15000);}
 function showMenu(){clearTimeout(timer);testing=false;test.classList.add('hidden');test.style.backgroundColor='';menu.classList.remove('hidden');select(selected);}
+function nextAuto(){clearTimeout(timer);if(selected>=buttons.length-1){autoMode=false;autoBtn.classList.remove('active');autoBtn.textContent='AUTO';showMenu();return;}selected++;start();}
+function startAuto(){autoMode=true;autoBtn.classList.add('active');autoBtn.textContent=isRussian?'СТОП':'STOP';select(0);start();}
+function stopAuto(){autoMode=false;autoBtn.classList.remove('active');autoBtn.textContent='AUTO';showMenu();}
+autoBtn.addEventListener('click',()=>autoMode?stopAuto():startAuto());
 buttons.forEach((b,i)=>{b.addEventListener('click',()=>{select(i);start()})});
-window.addEventListener('keydown',e=>{if(testing){if(e.key==='Escape'||e.key.toLowerCase()==='m')showMenu();return}if(['ArrowLeft','ArrowUp'].includes(e.key))select(selected-1);if(['ArrowRight','ArrowDown'].includes(e.key))select(selected+1);if(e.key==='Enter'||e.key===' ')start();});
-function poll(){const pads=navigator.getGamepads?navigator.getGamepads():[];const p=[...pads].find(Boolean);if(p){for(let i=0;i<p.buttons.length;i++){const pressed=!!p.buttons[i].pressed;if(pressed&&!lastButtons[i]){if(testing){if(i===1)showMenu();}else{if(i===14||i===12)select(selected-1);if(i===15||i===13)select(selected+1);if(i===0)start();}}lastButtons[i]=pressed;}}requestAnimationFrame(poll)}
+window.addEventListener('keydown',e=>{if(testing){if(e.key==='Escape'||e.key.toLowerCase()==='m')stopAuto();return}if(['ArrowLeft','ArrowUp'].includes(e.key))select(selected-1);if(['ArrowRight','ArrowDown'].includes(e.key))select(selected+1);if(e.key==='Enter'||e.key===' ')start();});
+function poll(){const pads=navigator.getGamepads?navigator.getGamepads():[];const p=[...pads].find(Boolean);if(p){for(let i=0;i<p.buttons.length;i++){const pressed=!!p.buttons[i].pressed;if(pressed&&!lastButtons[i]){if(testing){if(i===1)stopAuto();}else{if(i===14||i===12)select(selected-1);if(i===15||i===13)select(selected+1);if(i===0)start();}}lastButtons[i]=pressed;}const x=p.axes?.[0]||0,y=p.axes?.[1]||0;if(!testing){if(Math.abs(x)>.7)select(selected+(x>0?1:-1));if(Math.abs(y)>.7)select(selected+(y>0?1:-1));}}requestAnimationFrame(poll)}
 window.addEventListener('gamepadconnected',()=>{lastButtons=[]});poll();
 </script>
 </body></html>
