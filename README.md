@@ -1,8 +1,6 @@
-- Added automatic language detection using browser settings
-- Added Russian interface for ru locales
-- Added English interface for en and other locales
-- Removed manual RU/EN language buttons
+- Added page view counter
+- Added automatic RU/EN language detection
+- Removed manual language buttons
 - Preserved colored OLED test buttons
-- Preserved DualSense controller navigation
-- Preserved hidden 15-second OLED test timer
-- Preserved automatic return to the color selection menu
+- Preserved DualSense control
+- Preserved hidden 15-second test timer
